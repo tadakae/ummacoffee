@@ -30,45 +30,21 @@ onMounted(() => {
     <h1>Меню</h1>
     <div v-if="isLoading">Загрузка...</div>
     <div v-else-if="error">{{ error }}</div>
-    <div v-else class="menu-container">
-      <div v-for="item in items" :key="item.id" class="menu-item">
-        <img :src="item.imageUrl" :alt="item.titlee" class="menu-item-image" />
-        <h3>{{ item.titlee }}</h3>
-        <p>{{ item.price }} ₸</p>
+    <div v-else class="menu-container flex justify-center items-center flex-wrap gap-5">
+      <div v-for="item in items" :key="item.id" class="menu-item w-[150px] h-[200px] text-[#723b00] rounded-[20px] p-4 text-start relative">
+        <img :src="item.imageUrl" :alt="item.titlee" class="menu-item-image w-full h-20 " />
+        <h3 class="text-[16px] my-[10px]">{{ item.titlee }}</h3>
+        <p class="text-[14px] text-[#4c2700] font-bold absolute bottom-[16px]">{{ item.price }} ₸</p>
       </div>
     </div>
   </div>
 </template>
+<!--ee7c00-->
+<!--723b00-->
 
 <style scoped>
-.menu-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-
 .menu-item {
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 16px;
-  width: 200px;
-  text-align: center;
-  background-color: #f9f9f9;
-}
-
-.menu-item-image {
-  width: 100%;
-  height: auto;
-  border-radius: 8px;
-}
-
-h3 {
-  font-size: 16px;
-  margin: 10px 0;
-}
-
-p {
-  font-size: 14px;
-  color: #555;
+  background-color: #ffffff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.06);
 }
 </style>
