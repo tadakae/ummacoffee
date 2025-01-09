@@ -26,13 +26,13 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
+  <div class="px-7">
     <h1>Меню</h1>
     <div v-if="isLoading">Загрузка...</div>
     <div v-else-if="error">{{ error }}</div>
-    <div v-else class="menu-container flex justify-center items-center flex-wrap gap-5">
-      <div v-for="item in items" :key="item.id" class="menu-item w-[150px] h-[200px] text-[#723b00] rounded-[20px] p-4 text-start relative">
-        <img :src="item.imageUrl" :alt="item.titlee" class="menu-item-image w-full h-20 " />
+    <div v-else class="menu-container flex justify-start items-center flex-wrap gap-5">
+      <div v-for="item in items" :key="item.id" class="menu-item w-[calc(50%-10px)] h-[200px] text-[#723b00] rounded-[20px] p-4 text-start relative">
+        <img :src="item.imageUrl" :alt="item.titlee" class="menu-item-image w-full h-20" />
         <h3 class="text-[16px] my-[10px]">{{ item.titlee }}</h3>
         <p class="text-[14px] text-[#4c2700] font-bold absolute bottom-[16px]">{{ item.price }} ₸</p>
       </div>
@@ -46,5 +46,15 @@ onMounted(() => {
 .menu-item {
   background-color: #ffffff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.06);
+}
+
+.menu-item:first-child {
+  width: 100%;
+}
+
+.menu-item:first-child img {
+  width: 200px;
+  height: 100px;
+  margin: auto;
 }
 </style>

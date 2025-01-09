@@ -23,9 +23,10 @@ export default {
 
 <style>
 body {
-  font-family: 'Arial', sans-serif;
+  font-family: 'Raleway', serif;
   font-size: 16px;
   line-height: 1.5;
   color: #333;
+  background-color: #fafafa;
 }
 </style>
