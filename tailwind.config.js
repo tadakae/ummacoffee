@@ -6,6 +6,10 @@ export default {
   ],
   theme: {
     extend: {},
+    fontFamily: {
+      'raleway': ['Raleway', 'serif'],
+      'exo2': ['Exo2', 'serif'],
+    }
   },
   plugins: [],
 }
