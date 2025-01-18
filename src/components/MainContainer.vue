@@ -1,15 +1,18 @@
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { computed } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 
-const activeRoute = ref(''); // Активный роут
 const router = useRouter();
+const route = useRoute();
+
+// Автоматически определяем активный роут
+const activeRoute = computed(() => route.path);
 
 function navigateTo(route) {
-  activeRoute.value = route;
   router.push(route);
 }
 </script>
+
 
 <template>
   <div class="mainCon">
@@ -33,6 +36,7 @@ function navigateTo(route) {
   <router-view />
 </template>
 
+
 <style scoped>
 .container {
   background-color: #405147;
@@ -42,6 +46,12 @@ function navigateTo(route) {
   border-radius: 45px;
   height: 25px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.container.active {
+  background-color: #1f2b27; /* Цвет для активного состояния */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Добавляем тень */
 }
 
 b {

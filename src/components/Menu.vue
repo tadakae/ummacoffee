@@ -8,6 +8,7 @@ const error = ref(null);
 const isModalOpen = ref(false);
 const selectedItem = ref(null);
 const isAnimating = ref(false);
+const cartItems = ref([]); // Хранение выбранных элементов корзины
 
 const fetchMenuItems = async () => {
   try {
@@ -28,7 +29,7 @@ const openModal = (item) => {
   isAnimating.value = true;
   setTimeout(() => {
     isAnimating.value = false;
-  }, 300);
+  }, 10);
 };
 
 const closeModal = () => {
@@ -39,13 +40,22 @@ const closeModal = () => {
   }, 300);
 };
 
+// Добавление выбранного элемента в корзину
+const addToCart = () => {
+  if (selectedItem.value) {
+    cartItems.value.push({ ...selectedItem.value }); // Копируем элемент в корзину
+    closeModal();
+  }
+};
+
 onMounted(() => {
   fetchMenuItems();
 });
 </script>
 
+
 <template>
-  <div class="px-7">
+  <div class="px-3">
     <div v-if="isLoading">Загрузка...</div>
     <div v-else-if="error">{{ error }}</div>
     <div v-else class="menu-container mt-5 flex justify-start items-center flex-wrap gap-5">
@@ -79,23 +89,58 @@ onMounted(() => {
         <h2 class="text-[20px] font-bold mb-4">{{ selectedItem?.titlee }}</h2>
         <p class="text-[16px] mb-4">Описание: {{ selectedItem?.description || 'Нет описания.' }}</p>
         <img :src="selectedItem?.imageUrl" alt="Картинка" class="w-full h-[200px] object-cover rounded-[10px]" />
-        <button
-            @click="closeModal"
-            class="absolute top-2 right-2 text-gray-500 hover:text-gray-800 text-[20px] font-bold"
+        <div class="flex justify-between mt-4">
+          <button
+              @click="addToCart"
+              class="bg-green-500 text-white px-4 py-2 rounded-[10px] hover:bg-green-600"
+          >
+            В корзину
+          </button>
+          <button
+              @click="closeModal"
+              class="text-gray-500 hover:text-gray-800 text-[20px] font-bold"
+          >
+            Закрыть
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Отображение корзины -->
+    <div class="cart mt-8">
+      <h2 class="text-[20px] font-bold mb-4">Корзина</h2>
+      <div v-if="cartItems.length === 0">Корзина пуста</div>
+      <div v-else>
+        <div
+            v-for="(item, index) in cartItems"
+            :key="index"
+            class="cart-item border border-solid border-gray-100 bg-white w-full text-[#723b00] rounded-[10px] p-4 mb-2"
         >
-          &times;
-        </button>
+          <h3 class="text-[16px] font-bold">{{ item.titlee }}</h3>
+          <p class="text-[14px]">Описание: {{ item.description || 'Нет описания.' }}</p>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
+
 <style scoped>
+.menu-item {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Добавляем лёгкую тень */
+  transition: box-shadow 0.3s ease; /* Плавный переход при наведении */
+}
+
+.menu-item:hover {
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); /* Увеличенная тень при наведении */
+}
+
+/* Остальные стили остаются как есть */
 .modal-overlay {
   background-color: rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(5px);
   z-index: 3000;
-  transition: backdrop-filter 0.3s ease-in-out;
+  transition: backdrop-filter 0.1s ease-in-out;
 }
 
 .backdrop-hidden {
@@ -113,5 +158,23 @@ onMounted(() => {
 
 .animate-modal-in {
   animation: modal-in 0.3s ease-out forwards;
+}
+.cart {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.cart-item {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+button {
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  opacity: 0.9;
 }
 </style>
