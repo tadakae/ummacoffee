@@ -28,5 +28,6 @@ body {
   line-height: 1.5;
   color: #333;
   background-color: #fafafa;
+  margin: 0;
 }
 </style>

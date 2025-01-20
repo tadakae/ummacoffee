@@ -58,19 +58,32 @@ onMounted(() => {
   <div class="px-3">
     <div v-if="isLoading">Загрузка...</div>
     <div v-else-if="error">{{ error }}</div>
-    <div v-else class="menu-container mt-5 flex justify-start items-center flex-wrap gap-5">
-      <div
-          v-for="item in items"
-          :key="item.id"
-          class="menu-item border border-solid border-gray-100 bg-white w-[calc(50%-10px)] h-[250px] text-[#723b00] rounded-[20px] p-4 flex flex-col justify-center items-center text-center cursor-pointer"
-          @click="openModal(item)"
-      >
-        <img
-            :src="item.imageUrl"
-            :alt="item.titlee"
-            class="menu-item-image w-auto h-[120px] object-contain mb-3"
-        />
-        <h3 class="text-[16px] font-bold">{{ item.titlee }}</h3>
+    <div v-else class="menu-main mt-3">
+      <div class="menu-tab flex gap-3 px-2">
+        <div class="tab-item">
+          <span>Кофе</span>
+        </div>
+        <div class="tab-item">
+          <span>Коктейль</span>
+        </div>
+        <div class="tab-item">
+          <span>Чай</span>
+        </div>
+      </div>
+      <div class="menu-list mt-3 flex justify-start items-center flex-wrap gap-5">
+        <div
+            v-for="item in items"
+            :key="item.id"
+            class="menu-item border border-solid border-gray-100 bg-white w-[calc(50%-10px)] h-[250px] text-[#723b00] rounded-[20px] p-4 flex flex-col justify-center items-center text-center cursor-pointer"
+            @click="openModal(item)"
+        >
+          <img
+              :src="item.imageUrl"
+              :alt="item.titlee"
+              class="menu-item-image w-auto h-[120px] object-contain mb-3"
+          />
+          <h3 class="text-[16px] font-bold">{{ item.titlee }}</h3>
+        </div>
       </div>
     </div>
 
@@ -106,26 +119,35 @@ onMounted(() => {
       </div>
     </div>
 
-    <!-- Отображение корзины -->
-    <div class="cart mt-8">
-      <h2 class="text-[20px] font-bold mb-4">Корзина</h2>
-      <div v-if="cartItems.length === 0">Корзина пуста</div>
-      <div v-else>
-        <div
-            v-for="(item, index) in cartItems"
-            :key="index"
-            class="cart-item border border-solid border-gray-100 bg-white w-full text-[#723b00] rounded-[10px] p-4 mb-2"
-        >
-          <h3 class="text-[16px] font-bold">{{ item.titlee }}</h3>
-          <p class="text-[14px]">Описание: {{ item.description || 'Нет описания.' }}</p>
-        </div>
-      </div>
-    </div>
+<!--    &lt;!&ndash; Отображение корзины &ndash;&gt;-->
+<!--    <div class="cart mt-8">-->
+<!--      <h2 class="text-[20px] font-bold mb-4">Корзина</h2>-->
+<!--      <div v-if="cartItems.length === 0">Корзина пуста</div>-->
+<!--      <div v-else>-->
+<!--        <div-->
+<!--            v-for="(item, index) in cartItems"-->
+<!--            :key="index"-->
+<!--            class="cart-item border border-solid border-gray-100 bg-white w-full text-[#723b00] rounded-[10px] p-4 mb-2"-->
+<!--        >-->
+<!--          <h3 class="text-[16px] font-bold">{{ item.titlee }}</h3>-->
+<!--          <p class="text-[14px]">Описание: {{ item.description || 'Нет описания.' }}</p>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
   </div>
 </template>
 
 
 <style scoped>
+.tab-item {
+  background-color: #405147;
+  width: fit-content;
+  border-radius: 40px;
+  color: white;
+  padding: 2px 12px;
+  font-size: 16px;
+}
+
 .menu-item {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Добавляем лёгкую тень */
   transition: box-shadow 0.3s ease; /* Плавный переход при наведении */
