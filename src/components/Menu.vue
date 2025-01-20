@@ -59,7 +59,7 @@ onMounted(() => {
     <div v-if="isLoading">Загрузка...</div>
     <div v-else-if="error">{{ error }}</div>
     <div v-else class="menu-main mt-3">
-      <div class="menu-tab flex gap-5 px-2">
+      <div class="menu-tab flex gap-3 px-2">
         <div class="tab-item">
           <span>Кофе</span>
         </div>
@@ -144,7 +144,8 @@ onMounted(() => {
   width: fit-content;
   border-radius: 40px;
   color: white;
-  padding: 5px 15px;
+  padding: 2px 12px;
+  font-size: 16px;
 }
 
 .menu-item {

@@ -3,21 +3,18 @@
 </script>
 
 <template>
-  <div class="header-container sticky w-full z-10 top-0 m-0 flex items-center h-[60px]">
-    <img class="mainLogo" src="https://i.imgur.com/hR50ctO.png" alt="">
-<!--    <h1 class="Title text-[#fbeee5]">coffee</h1>-->
+  <div class="header-container w-full z-10 top-0 m-0 flex items-center h-[60px] px-5 justify-between">
+    <div class="flex gap-3 items-center">
+      <img src="../assets/icons/umma2.PNG" alt="" class="w-[35px] h-[35px] rounded-full" />
+      <h1 class="text-[20px] text-[#405147] font-bold">Абулхаир хана 50</h1>
+    </div>
+    <img src="../assets/icons/user.svg" width="30" height="30" alt="">
   </div>
 </template>
 
 <style scoped>
 .header-container {
-  background-color:  #405147;
-}
-
-h1 {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin: 0;
+  background-color:  #fafafa;
 }
 
 .mainLogo {
