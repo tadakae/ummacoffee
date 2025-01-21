@@ -13,7 +13,13 @@ const cartItems = ref([]); // Хранение выбранных элемент
 const fetchMenuItems = async () => {
   try {
     const response = await axios.get('https://8a5d97df2ab05859.mokky.dev/items');
-    items.value = response.data;
+    const rawData = response.data;
+
+    const flatItems = [];
+    Object.values(rawData[0]).forEach((category) => {
+      flatItems.push(...category);
+    });
+    items.value = flatItems;
   } catch (err) {
     error.value = 'Ошибка при загрузке данных';
     console.error(err);
@@ -79,10 +85,10 @@ onMounted(() => {
         >
           <img
               :src="item.imageUrl"
-              :alt="item.titlee"
+              :alt="item.title"
               class="menu-item-image w-auto h-[120px] object-contain mb-3"
           />
-          <h3 class="text-[16px] font-bold">{{ item.titlee }}</h3>
+          <h3 class="text-[16px] font-bold">{{ item.title }}</h3>
         </div>
       </div>
     </div>
