@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Umma Coffee</string>
+    <string name="title_activity_main">Umma Coffee</string>
+    <string name="package_name">ummacoffee.kz</string>
+    <string name="custom_url_scheme">ummacoffee.kz</string>
+</resources>

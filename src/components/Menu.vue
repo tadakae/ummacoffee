@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import {ref, onMounted, onUnmounted} from 'vue';
 import axios from 'axios';
 
 const items = ref([]);
@@ -9,16 +9,63 @@ const isModalOpen = ref(false);
 const selectedItem = ref(null);
 const isAnimating = ref(false);
 const cartItems = ref([]); // Хранение выбранных элементов корзины
+const filteredItems = ref([]); // Отфильтрованные элементы для отображения
+const categories = ref([]); // Категории
+const selectedCategory = ref(''); // Выбранная категория
+const isSticky = ref(false);
+const categoryNames = {
+  "Hot_coffee": "Горячий кофе",
+  "Ice_coffee": "Холодный кофе",
+  "Tea": "Чай",
+  "Limonade": "Лимонад",
+  "Coctail": "Коктейль",
+  "Smoozi": "Смузи"
+};
 
 const fetchMenuItems = async () => {
   try {
     const response = await axios.get('https://8a5d97df2ab05859.mokky.dev/items');
-    items.value = response.data;
+    const rawData = response.data;
+
+    if (Array.isArray(rawData) && rawData.length > 0) {
+      const flatItems = [];
+      const categoryNames = [];
+
+      // Перебираем категории и добавляем к элементам поле `category`
+      Object.entries(rawData[0]).forEach(([categoryName, itemsInCategory]) => {
+        if (Array.isArray(itemsInCategory)) {
+          itemsInCategory.forEach((item) => {
+            flatItems.push({ ...item, category: categoryName }); // Добавляем категорию к объекту
+          });
+          categoryNames.push(categoryName); // Собираем названия категорий
+        }
+      });
+
+      items.value = flatItems;
+      categories.value = categoryNames;
+
+      // Изначально показываем все элементы
+      filteredItems.value = flatItems;
+    } else {
+      error.value = 'Некорректный формат данных';
+    }
   } catch (err) {
     error.value = 'Ошибка при загрузке данных';
-    console.error(err);
+    console.error('Ошибка:', err);
   } finally {
     isLoading.value = false;
+  }
+};
+
+const filterItems = (category) => {
+  if (selectedCategory.value === category) {
+    // Если текущая категория уже выбрана, сбрасываем фильтр
+    selectedCategory.value = '';
+    filteredItems.value = items.value;
+  } else {
+    // Иначе применяем фильтр по категории
+    selectedCategory.value = category;
+    filteredItems.value = items.value.filter((item) => item.category === category);
   }
 };
 
@@ -48,8 +95,21 @@ const addToCart = () => {
   }
 };
 
+const checkSticky = () => {
+  // Получаем текущее положение прокрутки
+  const scrollPosition = window.scrollY || window.pageYOffset;
+
+  // Проверяем, если текущая позиция прокрутки больше или равна top 16px, меняем флаг
+  isSticky.value = scrollPosition >= 50;
+};
+
 onMounted(() => {
   fetchMenuItems();
+  window.addEventListener('scroll', checkSticky);  // Слушаем событие прокрутки
+});
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', checkSticky);  // Убираем обработчик события при размонтировании
 });
 </script>
 
@@ -59,30 +119,26 @@ onMounted(() => {
     <div v-if="isLoading">Загрузка...</div>
     <div v-else-if="error">{{ error }}</div>
     <div v-else class="menu-main mt-3">
-      <div class="menu-tab flex gap-3 px-2">
-        <div class="tab-item">
-          <span>Кофе</span>
-        </div>
-        <div class="tab-item">
-          <span>Коктейль</span>
-        </div>
-        <div class="tab-item">
-          <span>Чай</span>
+      <div class="menu-tab flex items-center gap-3 px-2 overflow-x-auto scroll-smooth h-[35px] sticky left-0 top-5 z-10">
+        <div v-for="category in categories" :key="category" class="tab-item transition border-[#405147] border" @click="filterItems(category)"
+             :class="[selectedCategory === category ? 'bg-white text-[#405147]' : 'bg-[#405147] text-white']">
+          <span>{{ categoryNames[category] || category }}</span>
         </div>
       </div>
+      <div class="sticky-overlay transition-all" :class="{'sticky-overlay-active': isSticky }"></div>
       <div class="menu-list mt-3 flex justify-start items-center flex-wrap gap-5">
         <div
-            v-for="item in items"
+            v-for="item in filteredItems"
             :key="item.id"
             class="menu-item border border-solid border-gray-100 bg-white w-[calc(50%-10px)] h-[250px] text-[#723b00] rounded-[20px] p-4 flex flex-col justify-center items-center text-center cursor-pointer"
             @click="openModal(item)"
         >
           <img
               :src="item.imageUrl"
-              :alt="item.titlee"
+              :alt="item.title"
               class="menu-item-image w-auto h-[120px] object-contain mb-3"
           />
-          <h3 class="text-[16px] font-bold">{{ item.titlee }}</h3>
+          <h3 class="text-[16px] font-bold">{{ item.title }}</h3>
         </div>
       </div>
     </div>
@@ -139,13 +195,42 @@ onMounted(() => {
 
 
 <style scoped>
+.sticky-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 80px; /* Высота равна высоте меню */
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0)); /* Градиент */
+  z-index: 5;
+  opacity: 0; /* Начальное состояние - скрыто */
+  pointer-events: none; /* Чтобы затемнение не блокировало клики */
+  transition: opacity 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Плавная анимация */
+}
+
+.sticky-overlay-active {
+  opacity: 1;
+}
+
+.menu-tab {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.menu-tab::-webkit-scrollbar {
+  display: none;
+}
+
 .tab-item {
-  background-color: #405147;
   width: fit-content;
   border-radius: 40px;
-  color: white;
   padding: 2px 12px;
   font-size: 16px;
+  user-select: none;
+  white-space: nowrap;
+  display: inline-block;
+  box-sizing: border-box;
 }
 
 .menu-item {
