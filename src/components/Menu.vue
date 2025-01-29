@@ -146,19 +146,22 @@ onUnmounted(() => {
     <!-- Модальное окно -->
     <div
         v-if="isModalOpen"
-        class="modal-overlay fixed inset-0 flex justify-center items-center"
+        class="modal-overlay fixed inset-0 flex justify-center items-end"
         :class="{ 'backdrop-hidden': isAnimating }"
         @click="closeModal"
     >
       <div
-          class="modal-content relative bg-white w-[90%] max-w-[500px] rounded-[20px] p-6 shadow-lg transform scale-0"
+          class="modal-content flex relative bg-white w-[100%] max-w-[500px] h-[700px] box-border rounded-[20px] p-6 shadow-lg transform scale-0 flex-col"
           :class="{ 'animate-modal-in': !isAnimating }"
           @click.stop
       >
-        <h2 class="text-[20px] font-bold mb-4">{{ selectedItem?.titlee }}</h2>
-        <p class="text-[16px] mb-4">Описание: {{ selectedItem?.description || 'Нет описания.' }}</p>
+        <h2 class="text-[20px] font-bold mb-4">{{ selectedItem?.title }}</h2>
+<!--        <p class="text-[16px] mb-4">Описание: {{ selectedItem?.description || 'Нет описания.' }}</p>-->
         <img :src="selectedItem?.imageUrl" alt="Картинка" class="w-full h-[200px] object-cover rounded-[10px]" />
-        <div class="flex justify-between mt-4">
+        <div v-if="selectedItem" class="flex justify-center text-[#405147] text-[18px] gap-10 items-center">
+          <span v-for="(price, volume) in selectedItem.price" :key="volume" class="bg-[#fafafa] rounded-[10px] shadow p-2">{{volume}} л</span>
+        </div>
+        <div class="flex justify-between items-end flex-grow">
           <button
               @click="addToCart"
               class="bg-green-500 text-white px-4 py-2 rounded-[10px] hover:bg-green-600"
@@ -167,7 +170,7 @@ onUnmounted(() => {
           </button>
           <button
               @click="closeModal"
-              class="text-gray-500 hover:text-gray-800 text-[20px] font-bold"
+              class="text-gray-500 h-fit hover:text-gray-800 text-[20px] font-bold"
           >
             Закрыть
           </button>
