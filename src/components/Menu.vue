@@ -152,13 +152,15 @@ onUnmounted(() => {
     >
       <div
           class="modal-content flex relative bg-white w-[100%] max-w-[500px] h-[700px] box-border rounded-[20px] p-6 shadow-lg transform scale-0 flex-col"
-          :class="{ 'animate-modal-in': !isAnimating }"
+          :class="{ 'animate-modal-in': !isAnimating,
+                    'animate-modal-out': isAnimating }"
           @click.stop
       >
         <h2 class="text-[20px] font-bold mb-4">{{ selectedItem?.title }}</h2>
 <!--        <p class="text-[16px] mb-4">Описание: {{ selectedItem?.description || 'Нет описания.' }}</p>-->
         <img :src="selectedItem?.imageUrl" alt="Картинка" class="w-full h-[200px] object-cover rounded-[10px]" />
-        <div v-if="selectedItem" class="flex justify-center text-[#405147] text-[18px] gap-10 items-center">
+        <div v-if="selectedItem" class="flex whitespace-nowrap gap-8 text-[#405147] text-[18px] items-center mt-5 pl-5">
+          <span>Объем</span>
           <span v-for="(price, volume) in selectedItem.price" :key="volume" class="bg-[#fafafa] rounded-[10px] shadow p-2">{{volume}} л</span>
         </div>
         <div class="flex justify-between items-end flex-grow">
@@ -250,25 +252,45 @@ onUnmounted(() => {
   background-color: rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(5px);
   z-index: 3000;
-  transition: backdrop-filter 0.1s ease-in-out;
+  transition: backdrop-filter 0.3s ease-out, opacity 0.3s ease-out;
 }
 
 .backdrop-hidden {
   backdrop-filter: blur(0);
+  opacity: 0;
+  pointer-events: none;
 }
 
 @keyframes modal-in {
   0% {
-    transform: scale(0);
+    transform: translateY(100%);
+    opacity: 0;
   }
   100% {
-    transform: scale(1);
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes modal-out {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100%);
+    opacity: 0;
   }
 }
 
 .animate-modal-in {
   animation: modal-in 0.3s ease-out forwards;
 }
+
+.animate-modal-out {
+  animation: modal-out 0.3s ease-out forwards;
+}
+
 .cart {
   background-color: #f9f9f9;
   padding: 20px;
